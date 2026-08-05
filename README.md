@@ -11,6 +11,16 @@ This repository shows end-to-end Web3 skills: HD wallet primitives, encrypted ke
 
 Open the live demo in Chrome/Edge with MetaMask, switch to **Sepolia**, then connect. Localhost is only for development on your machine.
 
+## Screenshots
+
+Connected wallet on Sepolia:
+
+![Connect on Sepolia](docs/screenshots/connect-sepolia.png)
+
+ETH transfer confirmed on-chain:
+
+![Transfer confirmed](docs/screenshots/transfer-confirmed.png)
+
 ## Features
 
 - HD wallet (BIP39 / BIP32 / BIP44) mnemonic generation and account derivation
