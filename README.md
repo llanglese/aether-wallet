@@ -29,6 +29,10 @@ Signature recovered to the connected address:
 
 ![Sign message success](docs/screenshots/sign-message-success.png)
 
+Transfer confirmation with network fee (Gas) in MetaMask:
+
+![MetaMask network fee](docs/screenshots/transfer-metamask-gas.png)
+
 ## Features
 
 - HD wallet (BIP39 / BIP32 / BIP44) mnemonic generation and account derivation
