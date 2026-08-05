@@ -21,6 +21,10 @@ ETH transfer confirmed on-chain:
 
 ![Transfer confirmed](docs/screenshots/transfer-confirmed.png)
 
+ETH transfer page showing estimated max fee (Gas):
+
+![Transfer gas estimate](docs/screenshots/transfer-gas-estimate.png)
+
 EIP-191 message signing (MetaMask request):
 
 ![Sign MetaMask request](docs/screenshots/sign-metamask-request.png)

@@ -1,25 +1,21 @@
-import { useEffect, useState } from "react";
-import { parseEther } from "viem";
+import { useEffect, useMemo, useState } from "react";
+import { formatEther, parseEther } from "viem";
 import {
   useAccount,
   useChainId,
+  useEstimateFeesPerGas,
   useSendTransaction,
   useWaitForTransactionReceipt,
 } from "wagmi";
 import {
   DEMO_SEPOLIA_ADDRESS,
   appendTxRecord,
-  estimateEthTransferGas,
   loadContacts,
   type Contact,
 } from "@aether/wallet-core";
 import { TokenTransferPanel } from "./TokenTransferPanel";
 
-function networkKeyFromChainId(chainId: number): "sepolia" | "mainnet" | null {
-  if (chainId === 11155111) return "sepolia";
-  if (chainId === 1) return "mainnet";
-  return null;
-}
+const ETH_TRANSFER_GAS = 21_000n;
 
 export function TransferPanel() {
   const { address, isConnected } = useAccount();
@@ -27,41 +23,23 @@ export function TransferPanel() {
   const [to, setTo] = useState<string>(DEMO_SEPOLIA_ADDRESS);
   const [amount, setAmount] = useState("0.001");
   const [contacts, setContacts] = useState<Contact[]>([]);
-  const [gasHint, setGasHint] = useState("");
+  const { data: feeData } = useEstimateFeesPerGas({
+    query: { enabled: isConnected },
+  });
   const { data: hash, sendTransaction, isPending, error } = useSendTransaction();
   const { isLoading: confirming, isSuccess } = useWaitForTransactionReceipt({
     hash,
   });
 
+  const gasHint = useMemo(() => {
+    const maxFee = feeData?.maxFeePerGas ?? feeData?.gasPrice;
+    if (!maxFee) return "";
+    return `Est. max fee ≈ ${formatEther(ETH_TRANSFER_GAS * maxFee)} ETH (gas ${ETH_TRANSFER_GAS.toString()})`;
+  }, [feeData]);
+
   useEffect(() => {
     setContacts(loadContacts());
   }, []);
-
-  useEffect(() => {
-    const network = networkKeyFromChainId(chainId);
-    if (!network) {
-      setGasHint("");
-      return;
-    }
-    let cancelled = false;
-    void estimateEthTransferGas({
-      network,
-      to,
-      amountEth: amount || "0",
-    })
-      .then((est) => {
-        if (cancelled) return;
-        setGasHint(
-          `Est. max fee ≈ ${est.estimatedFeeEth} ETH (gas ${est.gasLimit.toString()})`,
-        );
-      })
-      .catch(() => {
-        if (!cancelled) setGasHint("");
-      });
-    return () => {
-      cancelled = true;
-    };
-  }, [chainId, to, amount]);
 
   useEffect(() => {
     if (!isSuccess || !hash || !address) return;
@@ -123,7 +101,11 @@ export function TransferPanel() {
                 onChange={(e) => setAmount(e.target.value)}
               />
             </div>
-            {gasHint && <p className="muted">{gasHint}</p>}
+            {gasHint ? (
+              <p className="muted">{gasHint}</p>
+            ) : (
+              <p className="muted">Estimating max fee…</p>
+            )}
             <button
               type="button"
               disabled={isPending || confirming}
