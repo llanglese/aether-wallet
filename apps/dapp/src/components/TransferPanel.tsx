@@ -6,18 +6,62 @@ import {
   useSendTransaction,
   useWaitForTransactionReceipt,
 } from "wagmi";
-import { DEMO_SEPOLIA_ADDRESS, appendTxRecord } from "@aether/wallet-core";
+import {
+  DEMO_SEPOLIA_ADDRESS,
+  appendTxRecord,
+  estimateEthTransferGas,
+  loadContacts,
+  type Contact,
+} from "@aether/wallet-core";
 import { TokenTransferPanel } from "./TokenTransferPanel";
+
+function networkKeyFromChainId(chainId: number): "sepolia" | "mainnet" | null {
+  if (chainId === 11155111) return "sepolia";
+  if (chainId === 1) return "mainnet";
+  return null;
+}
 
 export function TransferPanel() {
   const { address, isConnected } = useAccount();
   const chainId = useChainId();
   const [to, setTo] = useState<string>(DEMO_SEPOLIA_ADDRESS);
   const [amount, setAmount] = useState("0.001");
+  const [contacts, setContacts] = useState<Contact[]>([]);
+  const [gasHint, setGasHint] = useState("");
   const { data: hash, sendTransaction, isPending, error } = useSendTransaction();
   const { isLoading: confirming, isSuccess } = useWaitForTransactionReceipt({
     hash,
   });
+
+  useEffect(() => {
+    setContacts(loadContacts());
+  }, []);
+
+  useEffect(() => {
+    const network = networkKeyFromChainId(chainId);
+    if (!network) {
+      setGasHint("");
+      return;
+    }
+    let cancelled = false;
+    void estimateEthTransferGas({
+      network,
+      to,
+      amountEth: amount || "0",
+    })
+      .then((est) => {
+        if (cancelled) return;
+        setGasHint(
+          `Est. max fee ≈ ${est.estimatedFeeEth} ETH (gas ${est.gasLimit.toString()})`,
+        );
+      })
+      .catch(() => {
+        if (!cancelled) setGasHint("");
+      });
+    return () => {
+      cancelled = true;
+    };
+  }, [chainId, to, amount]);
 
   useEffect(() => {
     if (!isSuccess || !hash || !address) return;
@@ -44,6 +88,25 @@ export function TransferPanel() {
         ) : (
           <>
             <p className="mono muted">From: {address}</p>
+            {contacts.length > 0 && (
+              <div className="field">
+                <label htmlFor="contact-pick">From address book</label>
+                <select
+                  id="contact-pick"
+                  defaultValue=""
+                  onChange={(e) => {
+                    if (e.target.value) setTo(e.target.value);
+                  }}
+                >
+                  <option value="">Select a contact…</option>
+                  {contacts.map((c) => (
+                    <option key={c.id} value={c.address}>
+                      {c.label} ({c.address.slice(0, 8)}…)
+                    </option>
+                  ))}
+                </select>
+              </div>
+            )}
             <div className="field">
               <label htmlFor="to">Recipient</label>
               <input
@@ -60,6 +123,7 @@ export function TransferPanel() {
                 onChange={(e) => setAmount(e.target.value)}
               />
             </div>
+            {gasHint && <p className="muted">{gasHint}</p>}
             <button
               type="button"
               disabled={isPending || confirming}

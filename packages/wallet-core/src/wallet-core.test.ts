@@ -6,6 +6,8 @@ import {
   encryptPrivateKeyToKeystore,
   ethAccountPath,
   exportPrivateKey,
+  recoverPersonalMessageSigner,
+  signPersonalMessage,
   validateMnemonic,
   DEMO_SEPOLIA_ADDRESS,
   NETWORKS,
@@ -65,9 +67,22 @@ describe("tx history helpers", () => {
   });
 });
 
-describe("tx history helpers", () => {
-  it("returns empty history when localStorage is unavailable", async () => {
-    const { loadTxHistory } = await import("./txHistory.js");
-    expect(loadTxHistory()).toEqual([]);
+describe("contacts helpers", () => {
+  it("returns empty contacts when localStorage is unavailable", async () => {
+    const { loadContacts } = await import("./contacts.js");
+    expect(loadContacts()).toEqual([]);
+  });
+});
+
+describe("personal message signing", () => {
+  it("signs and recovers the same address", async () => {
+    const phrase =
+      "test test test test test test test test test test test junk";
+    const { privateKey, address } = deriveAccount(phrase, 0);
+    const { signature, message } = await signPersonalMessage({
+      privateKey,
+      message: "hello aether",
+    });
+    expect(recoverPersonalMessageSigner(message, signature)).toBe(address);
   });
 });

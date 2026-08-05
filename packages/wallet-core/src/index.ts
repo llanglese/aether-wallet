@@ -4,3 +4,6 @@ export * from "./keystore.js";
 export * from "./balance.js";
 export * from "./transfer.js";
 export * from "./txHistory.js";
+export * from "./contacts.js";
+export * from "./gas.js";
+export * from "./signMessage.js";

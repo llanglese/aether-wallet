@@ -1,3 +1,4 @@
+import { useEffect, useState } from "react";
 import {
   useAccount,
   useBalance,
@@ -15,6 +16,11 @@ export function ConnectPanel() {
   const { disconnect } = useDisconnect();
   const { switchChain } = useSwitchChain();
   const { data: balance } = useBalance({ address });
+  const [hasInjected, setHasInjected] = useState(true);
+
+  useEffect(() => {
+    setHasInjected(typeof window !== "undefined" && Boolean(window.ethereum));
+  }, []);
 
   const networkLabel =
     chainId === sepolia.id
@@ -31,13 +37,21 @@ export function ConnectPanel() {
         Ethereum mainnet.
       </p>
 
+      {!hasInjected && (
+        <p className="err">
+          No browser wallet detected. Open this page in Chrome/Edge with the
+          MetaMask extension installed (not Cursor&apos;s Simple Browser), unlock
+          MetaMask, then click Connect again.
+        </p>
+      )}
+
       {!isConnected ? (
         <div className="row">
           {connectors.map((connector) => (
             <button
               key={connector.uid}
               type="button"
-              disabled={isPending}
+              disabled={isPending || !hasInjected}
               onClick={() => connect({ connector })}
             >
               Connect {connector.name}

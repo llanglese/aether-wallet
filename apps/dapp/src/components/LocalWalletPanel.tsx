@@ -1,6 +1,7 @@
 import { useMemo, useState } from "react";
 import {
   createMnemonic,
+  decryptKeystoreToPrivateKey,
   deriveAccount,
   encryptPrivateKeyToKeystore,
   validateMnemonic,
@@ -15,6 +16,9 @@ export function LocalWalletPanel() {
   const [index, setIndex] = useState(0);
   const [password, setPassword] = useState("password123");
   const [keystore, setKeystore] = useState("");
+  const [importJson, setImportJson] = useState("");
+  const [importPassword, setImportPassword] = useState("password123");
+  const [importedKey, setImportedKey] = useState("");
   const [error, setError] = useState("");
 
   const account = useMemo(() => {
@@ -30,8 +34,8 @@ export function LocalWalletPanel() {
     <section className="card">
       <h2>HD wallet &amp; keystore (local)</h2>
       <p className="muted">
-        Generate a mnemonic, derive account index N, and encrypt the private key
-        to Keystore V3 JSON. Secrets never leave this browser tab.
+        Generate a mnemonic, derive account index N, encrypt to Keystore V3, or
+        import an existing keystore. Secrets never leave this browser tab.
       </p>
 
       <div className="row" style={{ marginBottom: "0.85rem" }}>
@@ -113,6 +117,58 @@ export function LocalWalletPanel() {
           <textarea rows={8} readOnly value={keystore} />
         </div>
       )}
+
+      <hr style={{ margin: "1.25rem 0", border: 0, borderTop: "1px solid #e2e8f0" }} />
+
+      <h3>Import keystore</h3>
+      <p className="muted">
+        Paste Keystore V3 JSON and unlock with the password to recover the
+        private key locally.
+      </p>
+      <div className="field">
+        <label htmlFor="import-json">Keystore JSON</label>
+        <textarea
+          id="import-json"
+          rows={6}
+          value={importJson}
+          onChange={(e) => setImportJson(e.target.value)}
+          placeholder='{"version":3,"id":"...","crypto":{...}}'
+        />
+      </div>
+      <div className="field">
+        <label htmlFor="import-password">Password</label>
+        <input
+          id="import-password"
+          type="password"
+          value={importPassword}
+          onChange={(e) => setImportPassword(e.target.value)}
+        />
+      </div>
+      <button
+        type="button"
+        disabled={!importJson.trim()}
+        onClick={async () => {
+          try {
+            setError("");
+            setImportedKey("");
+            const pk = await decryptKeystoreToPrivateKey(
+              importJson,
+              importPassword,
+            );
+            setImportedKey(pk);
+          } catch (e) {
+            setError(e instanceof Error ? e.message : String(e));
+          }
+        }}
+      >
+        Unlock keystore
+      </button>
+      {importedKey && (
+        <p className="mono muted" style={{ marginTop: "0.75rem" }}>
+          Recovered private key: {importedKey}
+        </p>
+      )}
+
       {error && <p className="err">{error}</p>}
     </section>
   );

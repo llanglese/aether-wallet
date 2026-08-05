@@ -4,12 +4,22 @@ Modern Ethereum wallet toolkit and demo DApp.
 
 This repository shows end-to-end Web3 skills: HD wallet primitives, encrypted keystore handling, transaction signing/broadcast, Solidity contract development, and a React DApp that talks to Sepolia / Ethereum mainnet.
 
+## Links
+
+- **Live demo:** [https://aether-wallet-dapp.vercel.app](https://aether-wallet-dapp.vercel.app)
+- **Source:** [github.com/llanglese/aether-wallet](https://github.com/llanglese/aether-wallet)
+
+Open the live demo in Chrome/Edge with MetaMask, switch to **Sepolia**, then connect. Localhost is only for development on your machine.
+
 ## Features
 
 - HD wallet (BIP39 / BIP32 / BIP44) mnemonic generation and account derivation
-- Private key export and Ethereum Keystore V3 encrypt / decrypt
+- Private key export and Ethereum Keystore V3 encrypt / decrypt (import)
 - ETH and ERC-20 balance helpers
 - Transaction build → sign → broadcast utilities (ethers v6)
+- Gas fee estimate helpers for native transfers
+- EIP-191 personal message sign + recover
+- Local address book (browser localStorage)
 - Demo DApp: wallet connect, ETH/ERC-20 transfer, Guestbook contract calls
 - Local transaction history (browser localStorage)
 - Sample Solidity contracts (`AetherToken`, `Guestbook`) with Hardhat tests and deploy scripts
