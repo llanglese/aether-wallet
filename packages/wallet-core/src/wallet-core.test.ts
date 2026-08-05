@@ -74,6 +74,13 @@ describe("contacts helpers", () => {
   });
 });
 
+describe("token list helpers", () => {
+  it("returns empty watched tokens when localStorage is unavailable", async () => {
+    const { loadWatchedTokens } = await import("./tokenList.js");
+    expect(loadWatchedTokens()).toEqual([]);
+  });
+});
+
 describe("personal message signing", () => {
   it("signs and recovers the same address", async () => {
     const phrase =

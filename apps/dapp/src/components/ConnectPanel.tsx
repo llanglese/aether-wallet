@@ -17,6 +17,7 @@ export function ConnectPanel() {
   const { switchChain } = useSwitchChain();
   const { data: balance } = useBalance({ address });
   const [hasInjected, setHasInjected] = useState(true);
+  const [copied, setCopied] = useState(false);
 
   useEffect(() => {
     setHasInjected(typeof window !== "undefined" && Boolean(window.ethereum));
@@ -68,6 +69,22 @@ export function ConnectPanel() {
             Network: {networkLabel} · Chain ID {chainId}
           </p>
           <div className="row">
+            <button
+              type="button"
+              className="secondary"
+              onClick={async () => {
+                if (!address) return;
+                try {
+                  await navigator.clipboard.writeText(address);
+                  setCopied(true);
+                  window.setTimeout(() => setCopied(false), 1500);
+                } catch {
+                  setCopied(false);
+                }
+              }}
+            >
+              {copied ? "Copied" : "Copy address"}
+            </button>
             <button
               type="button"
               className={chainId === sepolia.id ? "active" : ""}

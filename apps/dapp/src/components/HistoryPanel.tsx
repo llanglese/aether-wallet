@@ -5,6 +5,12 @@ import {
   type LocalTxRecord,
 } from "@aether/wallet-core";
 
+function explorerTxUrl(chainId: number, hash: string): string | undefined {
+  if (chainId === 11155111) return `https://sepolia.etherscan.io/tx/${hash}`;
+  if (chainId === 1) return `https://etherscan.io/tx/${hash}`;
+  return undefined;
+}
+
 export function HistoryPanel() {
   const [items, setItems] = useState<LocalTxRecord[]>(() => loadTxHistory());
 
@@ -40,17 +46,27 @@ export function HistoryPanel() {
         <p className="muted">No local records yet.</p>
       ) : (
         <ul style={{ paddingLeft: "1.1rem", margin: 0 }}>
-          {items.map((item) => (
-            <li key={item.id} style={{ marginBottom: "0.75rem" }}>
-              <div className="mono">
-                [{item.kind}] {item.hash}
-              </div>
-              <div className="muted">
-                {item.amount ?? "—"} → {item.to} · chain {item.chainId} ·{" "}
-                {new Date(item.createdAt).toLocaleString()}
-              </div>
-            </li>
-          ))}
+          {items.map((item) => {
+            const url = explorerTxUrl(item.chainId, item.hash);
+            return (
+              <li key={item.id} style={{ marginBottom: "0.75rem" }}>
+                <div className="mono">
+                  [{item.kind}]{" "}
+                  {url ? (
+                    <a href={url} target="_blank" rel="noreferrer">
+                      {item.hash}
+                    </a>
+                  ) : (
+                    item.hash
+                  )}
+                </div>
+                <div className="muted">
+                  {item.amount ?? "—"} → {item.to} · chain {item.chainId} ·{" "}
+                  {new Date(item.createdAt).toLocaleString()}
+                </div>
+              </li>
+            );
+          })}
         </ul>
       )}
     </section>

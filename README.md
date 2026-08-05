@@ -46,8 +46,9 @@ Transfer confirmation with network fee (Gas) in MetaMask:
 - Gas fee estimate helpers for native transfers
 - EIP-191 personal message sign + recover
 - Local address book (browser localStorage)
-- Demo DApp: wallet connect, ETH/ERC-20 transfer, Guestbook contract calls
-- Local transaction history (browser localStorage)
+- ERC-20 token watchlist + approve / allowance UI
+- Demo DApp: wallet connect (copy address), ETH/ERC-20 transfer, Guestbook contract calls
+- Local transaction history with Etherscan / Sepolia explorer links
 - Sample Solidity contracts (`AetherToken`, `Guestbook`) with Hardhat tests and deploy scripts
 
 ## Stack
@@ -90,9 +91,11 @@ pnpm test:contracts   # Hardhat tests
 
 ## Deploy contracts to Sepolia
 
-1. Copy `.env.example` to `.env` and set:
+Use a **throwaway** deployer key funded with Sepolia ETH. Never commit private keys.
+
+1. Copy root [`.env.example`](.env.example) to `.env` and set:
    - `SEPOLIA_RPC_URL`
-   - `DEPLOYER_PRIVATE_KEY` (test key with Sepolia ETH)
+   - `DEPLOYER_PRIVATE_KEY`
 2. Deploy:
 
 ```bash
@@ -100,7 +103,7 @@ cd contracts
 pnpm exec hardhat run scripts/deploy.ts --network sepolia
 ```
 
-3. Put deployed addresses into `apps/dapp/.env`:
+3. Put the printed addresses into `apps/dapp/.env`:
 
 ```bash
 VITE_GUESTBOOK_ADDRESS=0x...
@@ -108,7 +111,18 @@ VITE_AETHER_TOKEN_ADDRESS=0x...
 VITE_SEPOLIA_RPC_URL=https://rpc.sepolia.org
 ```
 
-4. Restart the DApp (`pnpm dev`).
+4. Restart the local DApp (`pnpm --filter @aether/dapp dev`).
+
+### Wire the live demo (Vercel)
+
+1. Vercel → project `aether-wallet-dapp` → **Settings → Environment Variables**
+2. Add for Production (and Preview if you want):
+   - `VITE_GUESTBOOK_ADDRESS`
+   - `VITE_AETHER_TOKEN_ADDRESS`
+   - `VITE_SEPOLIA_RPC_URL` (optional; defaults work)
+3. **Deployments → Redeploy** the latest production deployment (env vars are baked in at build time for Vite).
+
+After redeploy, Contract + ERC-20 panels on https://aether-wallet-dapp.vercel.app use the on-chain addresses.
 
 ## Demo Sepolia address
 
