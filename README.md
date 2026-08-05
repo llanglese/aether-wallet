@@ -21,6 +21,14 @@ ETH transfer confirmed on-chain:
 
 ![Transfer confirmed](docs/screenshots/transfer-confirmed.png)
 
+EIP-191 message signing (MetaMask request):
+
+![Sign MetaMask request](docs/screenshots/sign-metamask-request.png)
+
+Signature recovered to the connected address:
+
+![Sign message success](docs/screenshots/sign-message-success.png)
+
 ## Features
 
 - HD wallet (BIP39 / BIP32 / BIP44) mnemonic generation and account derivation
