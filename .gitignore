@@ -1,0 +1,28 @@
+node_modules/
+dist/
+build/
+coverage/
+.env
+.env.local
+.env.*.local
+*.log
+.DS_Store
+.cache/
+.turbo/
+
+# Hardhat / Foundry artifacts
+contracts/cache/
+contracts/artifacts/
+contracts/typechain-types/
+contracts/coverage/
+contracts/coverage.json
+contracts/gasReporterOutput.json
+
+# Vite / TypeScript build info
+apps/dapp/dist/
+*.tsbuildinfo
+
+# Keys / wallets (never commit)
+**/keystore/
+**/*.key
+**/mnemonic*.txt

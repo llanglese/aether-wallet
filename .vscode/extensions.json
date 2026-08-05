@@ -1,0 +1,8 @@
+{
+  "name": "aether-wallet",
+  "private": true,
+  "scripts": {
+    "test": "pnpm test",
+    "dev": "pnpm --filter @aether/dapp dev"
+  }
+}

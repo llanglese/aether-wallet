@@ -1,0 +1,18 @@
+{
+  "name": "aether-wallet",
+  "private": true,
+  "version": "1.0.0",
+  "description": "Modern Ethereum wallet toolkit with HD core, Hardhat contracts, and a React DApp",
+  "packageManager": "pnpm@9.15.4",
+  "scripts": {
+    "build": "pnpm -r --if-present run build",
+    "test": "pnpm --filter @aether/wallet-core test && pnpm --filter @aether/contracts test",
+    "test:core": "pnpm --filter @aether/wallet-core test",
+    "test:contracts": "pnpm --filter @aether/contracts test",
+    "dev": "pnpm --filter @aether/dapp dev",
+    "lint": "pnpm -r --if-present run lint"
+  },
+  "engines": {
+    "node": ">=20"
+  }
+}
