@@ -235,7 +235,7 @@ export function TokenTransferPanel() {
             style={{
               margin: "1.25rem 0",
               border: 0,
-              borderTop: "1px solid #e2e8f0",
+              borderTop: "1px solid rgba(148, 183, 204, 0.16)",
             }}
           />
 

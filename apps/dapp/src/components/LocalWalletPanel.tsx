@@ -118,7 +118,7 @@ export function LocalWalletPanel() {
         </div>
       )}
 
-      <hr style={{ margin: "1.25rem 0", border: 0, borderTop: "1px solid #e2e8f0" }} />
+      <hr style={{ margin: "1.25rem 0", border: 0, borderTop: "1px solid rgba(148, 183, 204, 0.16)" }} />
 
       <h3>Import keystore</h3>
       <p className="muted">
