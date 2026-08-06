@@ -91,38 +91,17 @@ pnpm test:contracts   # Hardhat tests
 
 ## Deploy contracts to Sepolia
 
+Full guide: [docs/DEPLOY_SEPOLIA.md](docs/DEPLOY_SEPOLIA.md)
+
 Use a **throwaway** deployer key funded with Sepolia ETH. Never commit private keys.
 
-1. Copy root [`.env.example`](.env.example) to `.env` and set:
-   - `SEPOLIA_RPC_URL`
-   - `DEPLOYER_PRIVATE_KEY`
-2. Deploy:
-
-```bash
-cd contracts
-pnpm exec hardhat run scripts/deploy.ts --network sepolia
+```powershell
+cd D:\aether-wallet
+# set SEPOLIA_RPC_URL + DEPLOYER_PRIVATE_KEY in .env
+npx pnpm@9.15.4 --filter @aether/contracts run deploy:sepolia
 ```
 
-3. Put the printed addresses into `apps/dapp/.env`:
-
-```bash
-VITE_GUESTBOOK_ADDRESS=0x...
-VITE_AETHER_TOKEN_ADDRESS=0x...
-VITE_SEPOLIA_RPC_URL=https://rpc.sepolia.org
-```
-
-4. Restart the local DApp (`pnpm --filter @aether/dapp dev`).
-
-### Wire the live demo (Vercel)
-
-1. Vercel → project `aether-wallet-dapp` → **Settings → Environment Variables**
-2. Add for Production (and Preview if you want):
-   - `VITE_GUESTBOOK_ADDRESS`
-   - `VITE_AETHER_TOKEN_ADDRESS`
-   - `VITE_SEPOLIA_RPC_URL` (optional; defaults work)
-3. **Deployments → Redeploy** the latest production deployment (env vars are baked in at build time for Vite).
-
-After redeploy, Contract + ERC-20 panels on https://aether-wallet-dapp.vercel.app use the on-chain addresses.
+Copy printed `VITE_*` lines into `apps/dapp/.env`, restart the DApp, and set the same vars on Vercel → Redeploy for https://aether-wallet-dapp.vercel.app
 
 ## Demo Sepolia address
 

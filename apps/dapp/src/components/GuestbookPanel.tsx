@@ -54,8 +54,11 @@ export function GuestbookPanel() {
 
       {!enabled && (
         <p className="err">
-          Guestbook address is not configured. Deploy contracts, then add the
-          address to <span className="mono">apps/dapp/.env</span>.
+          Guestbook address is not configured. Follow{" "}
+          <span className="mono">docs/DEPLOY_SEPOLIA.md</span>: deploy with
+          Hardhat, then set <span className="mono">VITE_GUESTBOOK_ADDRESS</span>{" "}
+          in <span className="mono">apps/dapp/.env</span> (and Vercel for the
+          live demo).
         </p>
       )}
 
